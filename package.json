@@ -1,0 +1,23 @@
+{
+  "name": "hrlabtimetracking mock api",
+  "description": "This is a Mock API for the HRLab timetracking feature. It contains all relevant endpoints for fetching and logging working times. The workinghours are logged for a given user and optionally a project. \n\nThere are only two ways to interact with the timetracking: starting (POST) and stopping (PUT) it. \nThe tracked workinghours are saved as worktime (action 'work'). The Server automatically fills up the in between times as breaks (action 'pause')",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "fastify start index.js",
+    "test": "tap test/test-*.js",
+    "dev": "fastify start -l info -P index.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "fastify-openapi-glue": "^2.6.8",
+    "fastify-plugin": "^3.0.1",
+    "mongodb": "^4.5.0"
+  },
+  "devDependencies": {
+    "fastify": "^3.28.0",
+    "fastify-cli": "^2.15.0",
+    "tap": "^16.1.0"
+  }
+}

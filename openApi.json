@@ -1,0 +1,455 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "HRlab Timetracking Mock API",
+    "description": "This is a Mock API for the HRLab timetracking feature. It contains all relevant endpoints for fetching and logging working times. The workinghours are logged for a given user and optionally a project. \n\nThere are only two ways to interact with the timetracking: starting (POST) and stopping (PUT) it. \nThe tracked workinghours are saved as worktime (action 'work'). The Server automatically fills up the in between times as breaks (action 'pause')",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://app.hrlab.de/en"
+    }
+  ],
+  "paths": {
+    "/projects/time_tracking": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "fetches projects for timetracking",
+        "description": "fetches projects that are available for timetracking, That means that the current user is member of the project and that the project is currently active",
+        "operationId": "listProjects",
+        "parameters": [
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "order of the returned projects.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "created_at DESC"
+            }
+          },
+          {
+            "name": "template",
+            "in": "query",
+            "description": "template to return only desired data.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "index_search"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "id of a user, returns only projects a given user is a member of.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "valid_on_date",
+            "in": "query",
+            "description": "date without time - only projects will be returned that are active on a given date. For our purpose this should be the current date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns a list of projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Project"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workinghour_logs/users/{userId}/workinghours": {
+      "get": {
+        "tags": [
+          "workinghour log"
+        ],
+        "summary": "fetches logged workinghour of a given user",
+        "description": "fetches logged workinghours of a given user",
+        "operationId": "workinghoursByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "id of user for whom to track time",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns logged workinghours of  given user as well as information if the timetracking is locked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "locked_time_tracking": {
+                      "type": "boolean",
+                      "description": "timetracking is locked and therefore no workinghours can be logged",
+                      "default": false
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/LoggedWorkinghour"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "workinghour log"
+        ],
+        "summary": "start timetracking",
+        "description": "starts the timetracking by creating a new workinghour for a given user",
+        "operationId": "startTimetracking",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "id of user for whom to track time",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "workinghour to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkinghourLogStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseWorkinghour"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "workinghour"
+      }
+    },
+    "/workinghour_logs/users/{userId}/workinghours/{workinghourId}": {
+      "put": {
+        "tags": [
+          "workinghour log"
+        ],
+        "summary": "stop timetracking",
+        "description": "stop the timetracking by updating the related workinghour (created by [POST])",
+        "operationId": "stopTimetracking",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "id of user for whom the time is tracked",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "workinghourId",
+            "in": "path",
+            "description": "id of workinghour that will be updated",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "workinghour to be updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkinghourLogStop"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseWorkinghour"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "workinghour"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WorkinghourLogStart": {
+        "required": [
+          "log_type",
+          "start_date",
+          "user_id",
+          "workinghour_period"
+        ],
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "the time the logging was started",
+            "format": "date-time"
+          },
+          "workinghour_period": {
+            "$ref": "#/components/schemas/WorkinghourPeriodAsNumber"
+          },
+          "log_type": {
+            "$ref": "#/components/schemas/LogTypeAsNumber"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "id of the user that the workinghours are logged for",
+            "example": 1
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "id of the project that the workinghours are logged for",
+            "example": 1
+          }
+        }
+      },
+      "WorkinghourLogStop": {
+        "required": [
+          "action",
+          "additional_params",
+          "end_date",
+          "log_type"
+        ],
+        "type": "object",
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "the time the logging was started",
+            "format": "date-time"
+          },
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "log_type": {
+            "$ref": "#/components/schemas/LogTypeAsNumber"
+          },
+          "additional_params": {
+            "required": [
+              "send_notification",
+              "start_calculation"
+            ],
+            "type": "object",
+            "properties": {
+              "start_calculation": {
+                "type": "boolean",
+                "description": "calculate the logged time",
+                "example": true
+              },
+              "send_notification": {
+                "type": "boolean",
+                "description": "notify responsible users that workinghours were logged",
+                "example": true
+              }
+            },
+            "description": "additional options for triggering serverside actions"
+          }
+        }
+      },
+      "ResponseWorkinghour": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-04-29T17:21:06.417Z"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-04-29T19:22:00Z"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "internal_creation": {
+            "description": "describes how the workinghour was created. will be always 'true' in our use case",
+            "type": "boolean",
+            "example": true
+          },
+          "log_type": {
+            "$ref": "#/components/schemas/LogTypeAsString"
+          },
+          "project_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "resource_url": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-04-29T19:21:00Z"
+          },
+          "tenant_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-04-29T17:23:33.792Z"
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "workinghour_period": {
+            "$ref": "#/components/schemas/WorkinghourPeriodAsString"
+          },
+          "workinghours": {
+            "type": "number",
+            "description": "tracked time in hours. Initially 0",
+            "example": 0.016666666666666666
+          },
+          "workinghours_saldo_id": {
+            "type": "integer",
+            "example": 29
+          }
+        }
+      },
+      "LoggedWorkinghour": {
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-04-13T19:51:07Z"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-04-13T22:30:03Z"
+          },
+          "project_name": {
+            "type": "string",
+            "example": "Project A"
+          },
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "log_type": {
+            "$ref": "#/components/schemas/LogTypeAsString"
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "root_company_id": {
+            "type": "integer",
+            "description": "root company the project is related to",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Project A"
+          }
+        }
+      },
+      "LogTypeAsString": {
+        "type": "string",
+        "description": "type of log action as string, occurs when receiving workinghour data from the server. 'log' when the timetracking is started, 'entry' once the timetracking stopped",
+        "enum": [
+          "log",
+          "entry"
+        ]
+      },
+      "LogTypeAsNumber": {
+        "type": "integer",
+        "description": "type of log action as number, use when sending workinghour data to the server. 1 when the timetracking ist started, 0 once the timetracking stopped",
+        "enum": [
+          1,
+          0
+        ]
+      },
+      "Action": {
+        "type": "string",
+        "description": "type of tracked time. 'work' for worktime, 'pause' for breaks ",
+        "enum": [
+          "work",
+          "pause"
+        ]
+      },
+      "WorkinghourPeriodAsString": {
+        "type": "string",
+        "description": "occurs when receiving workinghour data from the server. is 'daily' for anything timetracking related",
+        "enum": [
+          "daily"
+        ]
+      },
+      "WorkinghourPeriodAsNumber": {
+        "type": "integer",
+        "description": "use when sending workinghour data to the server. use 0 for anything timetracking related",
+        "enum": [
+          0
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "_id": "projectId",
+    "sequence_value": 0
+  },
+  {
+    "_id": "userId",
+    "sequence_value": 0
+  },
+  {
+    "_id": "workinghourId",
+    "sequence_value": 0
+  }
+]

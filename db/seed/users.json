@@ -1,0 +1,14 @@
+[
+  {
+    "_id": 1,
+    "full_name": "John Doe",
+    "personal_number": 1,
+    "timetracking_activated": true
+  },
+  {
+    "_id": 2,
+    "full_name": "Max Mustermann",
+    "personal_number": 2,
+    "timetracking_activated": false
+  }
+]
