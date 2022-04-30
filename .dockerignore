@@ -1,0 +1,6 @@
+db/data
+.git
+*Dockerfile*
+*docker-compose*
+node_modules
+fragworld-ui/node_modules
