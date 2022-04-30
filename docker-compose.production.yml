@@ -28,7 +28,7 @@ services:
       API_URL: doc/openApi.json
   nginx:
     image: "nginx:alpine"
-    container_name: frontproxy
+    container_name: mock-api-frontproxy
     ports:
       - "443:443"
       - "80:80"
