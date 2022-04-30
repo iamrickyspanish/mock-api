@@ -3,6 +3,14 @@ const DB_NAME = "hrlab-timetracking";
 const { MongoClient } = require("mongodb");
 const { getNextSequenceValue } = require("./src/helpers");
 
+const formatWorkinghourForResponse = (workinghour) => {
+  return {
+    ...workinghour,
+    log_type: workinghour.log_type ? "entry" : "log",
+    action: workinghour.action ? "work" : "pause"
+  };
+};
+
 class Service {
   constructor() {
     (async () => {
@@ -157,15 +165,18 @@ class Service {
         .find(
           {
             user_id: Number(req.params.userId)
+            // log_type: 1,
           },
           { _id: 1 }
         )
         .toArray();
       reply.send({
-        data: results.map(({ _id, ...rest }) => ({
-          ...rest,
-          id: _id
-        }))
+        data: results.map(({ _id, ...rest }) =>
+          formatWorkinghourForResponse({
+            ...rest,
+            id: _id
+          })
+        )
       });
     } catch (err) {
       reply.send(err);
@@ -298,7 +309,7 @@ class Service {
       const item = { ...req.params, _id: getNextSequenceValue("workinghours") };
       await workinghours.insertOne(item);
       reply.send({
-        data: item
+        data: formatWorkinghourForResponse(item)
       });
     } catch (err) {
       reply.send(err);
@@ -445,7 +456,7 @@ class Service {
       );
       console.log("=======>", result);
       reply.send({
-        data: item
+        data: formatWorkinghourForResponse(item)
       });
     } catch (err) {
       reply.send(err);
