@@ -8,20 +8,19 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-    # logging:
-    #   driver: none
+    logging:
+      driver: none
   mongo-express:
     image: mongo-express
     restart: always
     depends_on:
       - mongo
     environment:
-      ME_CONFIG_SITE_BASEURL: /admin/
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
-    # logging:
-    #   driver: none
+    logging:
+      driver: none
   swagger-ui:
     image: swaggerapi/swagger-ui
     container_name: swagger_ui_container
