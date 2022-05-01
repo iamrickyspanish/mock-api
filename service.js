@@ -28,7 +28,7 @@ const createWorkinghour = async (db, data) => {
     workinghour_period: "daily",
     resource_url: "xxx",
     workinghours_saldo_id: 1,
-    action: "work",
+    action: data.action || "work",
     workinghours: 0,
     tenant_id: 1,
     updated_at: createdAt
@@ -103,27 +103,30 @@ class Service {
           user_id: req.params.userId,
           // log_type: 0
           end_date: {
-            $lt: req.body.start_date,
-            $gte: new Date(
-              new Date(req.body.start_date).setUTCHours(0, 0, 0, 0)
-            )
+            $lt: req.body.start_date
+            // $gt: new Date(new Date(req.body.start_date).setUTCHours(0, 0, 0, 0))
           }
         })
         .limit(1)
         .sort({ end_date: -1 })
         .toArray();
       console.log("last wh=========>", lastWHs);
-      if (false && lastWHs.length) {
-        // fill pause between last entry on this day and this new entry
-        const lastWH = lastWHs[0];
-        await createWorkinghour(this.db, {
-          ...req.body,
-          user_id: req.params.userId,
-          log_type: 1,
-          action: "pause",
-          start_date: lastWH.end_date,
-          end_date: req.body.start_date
-        });
+      if (lastWHs.length) {
+        if (
+          new Date(req.body.start_date).setUTCHours(0, 0, 0, 0) ===
+          new Date().setUTCHours(0, 0, 0, 0)
+        ) {
+          // fill pause between last entry on this day and this new entry
+          const lastWH = lastWHs[0];
+          await createWorkinghour(this.db, {
+            ...req.body,
+            user_id: req.params.userId,
+            log_type: 1,
+            action: "pause",
+            start_date: lastWH.end_date,
+            end_date: req.body.start_date
+          });
+        }
       }
       const result = await createWorkinghour(this.db, {
         ...req.body,
