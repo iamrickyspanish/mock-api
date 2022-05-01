@@ -30,13 +30,15 @@ class Service {
         )
         .toArray();
       return {
-        data: results.map(({ _id, ...rest }) => {
-          ({
-            ...rest,
-            id: _id
-          });
+        // data: results
+        data: results.map((project) => {
+          return {
+            ...project,
+            id: project?._id
+          };
         })
       };
+      // return { data: ["affe"] };
     } catch (err) {
       reply.send(err);
     }
