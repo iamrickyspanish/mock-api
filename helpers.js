@@ -15,12 +15,13 @@ const formatWorkinghourForResponse = (workinghour, short = false) => {
     ...rest,
     log_type: rest.log_type ? "log" : "entry",
     workinghour_period: "daily",
-    id: _id
+    id: Number(workinghour.id || _id)
   };
   return short
     ? (() => {
         const { start_date, end_date, id, project_name, action, log_type } =
           preparedWorkinghour;
+        console.log("???????", id);
         return { start_date, end_date, id, project_name, action, log_type };
       })()
     : preparedWorkinghour;

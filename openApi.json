@@ -370,6 +370,10 @@
             "type": "string",
             "example": "Project A"
           },
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
           "action": {
             "$ref": "#/components/schemas/Action"
           },

@@ -114,11 +114,9 @@ class Service {
         log_type: 1,
         action: "work"
       });
+
       return {
-        data: formatWorkinghourForResponse({
-          ...result,
-          _id: result.insertedId
-        })
+        data: formatWorkinghourForResponse(result)
       };
     } catch (err) {
       return reply.send(err);
