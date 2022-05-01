@@ -7,15 +7,13 @@
   },
   "servers": [
     {
-      "url": "https://app.hrlab.de/en"
+      "url": "https://frag.world/api/en"
     }
   ],
   "paths": {
     "/projects/time_tracking": {
       "get": {
-        "tags": [
-          "projects"
-        ],
+        "tags": ["projects"],
         "summary": "fetches projects for timetracking",
         "description": "fetches projects that are available for timetracking, That means that the current user is member of the project and that the project is currently active",
         "operationId": "listProjects",
@@ -84,9 +82,7 @@
     },
     "/workinghour_logs/users/{userId}/workinghours": {
       "get": {
-        "tags": [
-          "workinghour log"
-        ],
+        "tags": ["workinghour log"],
         "summary": "fetches logged workinghour of a given user",
         "description": "fetches logged workinghours of a given user",
         "operationId": "workinghoursByUserId",
@@ -128,9 +124,7 @@
         }
       },
       "post": {
-        "tags": [
-          "workinghour log"
-        ],
+        "tags": ["workinghour log"],
         "summary": "start timetracking",
         "description": "starts the timetracking by creating a new workinghour for a given user",
         "operationId": "startTimetracking",
@@ -173,9 +167,7 @@
     },
     "/workinghour_logs/users/{userId}/workinghours/{workinghourId}": {
       "put": {
-        "tags": [
-          "workinghour log"
-        ],
+        "tags": ["workinghour log"],
         "summary": "stop timetracking",
         "description": "stop the timetracking by updating the related workinghour (created by [POST])",
         "operationId": "stopTimetracking",
@@ -229,12 +221,7 @@
   "components": {
     "schemas": {
       "WorkinghourLogStart": {
-        "required": [
-          "log_type",
-          "start_date",
-          "user_id",
-          "workinghour_period"
-        ],
+        "required": ["log_type", "start_date", "user_id", "workinghour_period"],
         "type": "object",
         "properties": {
           "start_date": {
@@ -261,12 +248,7 @@
         }
       },
       "WorkinghourLogStop": {
-        "required": [
-          "action",
-          "additional_params",
-          "end_date",
-          "log_type"
-        ],
+        "required": ["action", "additional_params", "end_date", "log_type"],
         "type": "object",
         "properties": {
           "end_date": {
@@ -281,10 +263,7 @@
             "$ref": "#/components/schemas/LogTypeAsNumber"
           },
           "additional_params": {
-            "required": [
-              "send_notification",
-              "start_calculation"
-            ],
+            "required": ["send_notification", "start_calculation"],
             "type": "object",
             "properties": {
               "start_calculation": {
@@ -305,67 +284,72 @@
       "ResponseWorkinghour": {
         "type": "object",
         "properties": {
-          "comment": {
-            "type": "string"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2022-04-29T17:21:06.417Z"
-          },
-          "end_date": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2022-04-29T19:22:00Z"
-          },
-          "id": {
-            "type": "integer",
-            "example": 1
-          },
-          "internal_creation": {
-            "description": "describes how the workinghour was created. will be always 'true' in our use case",
-            "type": "boolean",
-            "example": true
-          },
-          "log_type": {
-            "$ref": "#/components/schemas/LogTypeAsString"
-          },
-          "project_id": {
-            "type": "integer",
-            "example": 1
-          },
-          "resource_url": {
-            "type": "string"
-          },
-          "start_date": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2022-04-29T19:21:00Z"
-          },
-          "tenant_id": {
-            "type": "integer",
-            "example": 1
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2022-04-29T17:23:33.792Z"
-          },
-          "user_id": {
-            "type": "integer",
-            "example": 1
-          },
-          "workinghour_period": {
-            "$ref": "#/components/schemas/WorkinghourPeriodAsString"
-          },
-          "workinghours": {
-            "type": "number",
-            "description": "tracked time in hours. Initially 0",
-            "example": 0.016666666666666666
-          },
-          "workinghours_saldo_id": {
-            "type": "integer",
-            "example": 29
+          "data": {
+            "type": "object",
+            "properties": {
+              "comment": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-04-29T17:21:06.417Z"
+              },
+              "end_date": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-04-29T19:22:00Z"
+              },
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "internal_creation": {
+                "description": "describes how the workinghour was created. will be always 'true' in our use case",
+                "type": "boolean",
+                "example": true
+              },
+              "log_type": {
+                "$ref": "#/components/schemas/LogTypeAsString"
+              },
+              "project_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "resource_url": {
+                "type": "string"
+              },
+              "start_date": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-04-29T19:21:00Z"
+              },
+              "tenant_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2022-04-29T17:23:33.792Z"
+              },
+              "user_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "workinghour_period": {
+                "$ref": "#/components/schemas/WorkinghourPeriodAsString"
+              },
+              "workinghours": {
+                "type": "number",
+                "description": "tracked time in hours. Initially 0",
+                "example": 0.016666666666666666
+              },
+              "workinghours_saldo_id": {
+                "type": "integer",
+                "example": 29
+              }
+            }
           }
         }
       },
@@ -415,40 +399,27 @@
       "LogTypeAsString": {
         "type": "string",
         "description": "type of log action as string, occurs when receiving workinghour data from the server. 'log' when the timetracking is started, 'entry' once the timetracking stopped",
-        "enum": [
-          "log",
-          "entry"
-        ]
+        "enum": ["log", "entry"]
       },
       "LogTypeAsNumber": {
         "type": "integer",
         "description": "type of log action as number, use when sending workinghour data to the server. 1 when the timetracking ist started, 0 once the timetracking stopped",
-        "enum": [
-          1,
-          0
-        ]
+        "enum": [1, 0]
       },
       "Action": {
         "type": "string",
         "description": "type of tracked time. 'work' for worktime, 'pause' for breaks ",
-        "enum": [
-          "work",
-          "pause"
-        ]
+        "enum": ["work", "pause"]
       },
       "WorkinghourPeriodAsString": {
         "type": "string",
         "description": "occurs when receiving workinghour data from the server. is 'daily' for anything timetracking related",
-        "enum": [
-          "daily"
-        ]
+        "enum": ["daily"]
       },
       "WorkinghourPeriodAsNumber": {
         "type": "integer",
         "description": "use when sending workinghour data to the server. use 0 for anything timetracking related",
-        "enum": [
-          0
-        ]
+        "enum": [0]
       }
     }
   }

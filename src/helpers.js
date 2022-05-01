@@ -1,12 +1,13 @@
-const getNextSequenceValue = (db, sequenceName) => {
-  var sequenceDocument = db.counters.findAndModify({
-    query: { _id: sequenceName },
-    update: { $inc: { sequence_value: 1 } },
-    new: true
-  });
-  return sequenceDocument.sequence_value;
+const getNextSequenceValue = async (db, sequenceName) => {
+  const counters = db.collection("counters");
+  const sequenceDocument = await counters.findOneAndUpdate(
+    { _id: sequenceName },
+    { $inc: { sequence_value: 1 } },
+    { returnNewDocument: true }
+  );
+  return sequenceDocument?.value?.sequence_value;
 };
 
-exports.default = {
+module.exports = {
   getNextSequenceValue
 };
