@@ -11,6 +11,65 @@
     }
   ],
   "paths": {
+    "/api_auth/login": {
+      "post": {
+        "tags": ["login"],
+        "summary": "authenticate using email and password",
+        "description": "for this demo case, the following credentials will always be valid:  email: 'user@mail.com', password: 'Password12345'",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "user credentials",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "required": true,
+                  "example": "user@mail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "required": true,
+                  "example": "Password12345"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "the error message",
+                      "example": "The login data are not valid!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "login success",
+            "headers": {
+              "Authorization": {
+                "$ref": "#/components/schemas/JWTHeader"
+              }
+            }
+          }
+        }
+      }
+    },
     "/projects/time_tracking": {
       "get": {
         "tags": ["projects"],
@@ -26,6 +85,15 @@
             "schema": {
               "type": "string",
               "default": "created_at DESC"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "contains the JWT in format 'Bearer token",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JWTHeader"
             }
           },
           {
@@ -88,6 +156,15 @@
         "operationId": "workinghoursByUserId",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "description": "contains the JWT in format 'Bearer token",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JWTHeader"
+            }
+          },
+          {
             "name": "userId",
             "in": "path",
             "description": "id of user for whom to track time",
@@ -129,6 +206,15 @@
         "description": "starts the timetracking by creating a new workinghour for a given user",
         "operationId": "startTimetracking",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "contains the JWT in format 'Bearer token",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JWTHeader"
+            }
+          },
           {
             "name": "userId",
             "in": "path",
@@ -172,6 +258,15 @@
         "description": "stop the timetracking by updating the related workinghour (created by [POST])",
         "operationId": "stopTimetracking",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "contains the JWT in format 'Bearer token",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/JWTHeader"
+            }
+          },
           {
             "name": "userId",
             "in": "path",
@@ -424,6 +519,11 @@
         "type": "integer",
         "description": "use when sending workinghour data to the server. use 0 for anything timetracking related",
         "enum": [0]
+      },
+      "JWTHeader": {
+        "type": "string",
+        "description": "contains the JWT in format 'Bearer token'",
+        "example": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwic2NwIjoidXNlciIsImF1ZCI6bnVsbCwiaWF0IjoxNjQyMTY4NTA0LCJleHAiOjE2NDM0NjQ1MDQsImp0aSI6ImM0ODVkNjc1LWI2YWUtNDVjYy1iNjE1LTAwNTllNTQ0YzI5ZSJ9.jNXuQ7qSNgZA8cTrLahc73JdP9uA_fbJO15xh6ZqOVk"
       }
     }
   }
