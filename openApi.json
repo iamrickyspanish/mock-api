@@ -17,30 +17,35 @@
         "summary": "authenticate using email and password",
         "description": "for this demo case, the following credentials will always be valid:  email: 'user@mail.com', password: 'Password12345'",
         "operationId": "login",
-        "parameters": [
-          {
-            "name": "user",
-            "in": "body",
-            "description": "user credentials",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "format": "email",
-                  "required": true,
-                  "example": "user@mail.com"
-                },
-                "password": {
-                  "type": "string",
-                  "required": true,
-                  "example": "Password12345"
+        "requestBody": {
+          "description": "workinghour to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["user"],
+                "properties": {
+                  "user": {
+                    "type": "object",
+                    "required": ["email", "password"],
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@mail.com"
+                      },
+                      "password": {
+                        "type": "string",
+                        "example": "Password12345"
+                      }
+                    }
+                  }
                 }
               }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "404": {
             "description": "invalid credentials",
@@ -63,7 +68,9 @@
             "description": "login success",
             "headers": {
               "Authorization": {
-                "$ref": "#/components/schemas/JWTHeader"
+                "schema": {
+                  "$ref": "#/components/schemas/JWTHeader"
+                }
               }
             }
           }
@@ -72,6 +79,11 @@
     },
     "/projects/time_tracking": {
       "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["projects"],
         "summary": "fetches projects for timetracking",
         "description": "fetches projects that are available for timetracking, That means that the current user is member of the project and that the project is currently active",
@@ -85,15 +97,6 @@
             "schema": {
               "type": "string",
               "default": "created_at DESC"
-            }
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "contains the JWT in format 'Bearer token",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/JWTHeader"
             }
           },
           {
@@ -150,20 +153,16 @@
     },
     "/workinghour_logs/users/{userId}/workinghours": {
       "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["workinghour log"],
         "summary": "fetches logged workinghour of a given user",
         "description": "fetches logged workinghours of a given user",
         "operationId": "workinghoursByUserId",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "contains the JWT in format 'Bearer token",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/JWTHeader"
-            }
-          },
           {
             "name": "userId",
             "in": "path",
@@ -201,20 +200,16 @@
         }
       },
       "post": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["workinghour log"],
         "summary": "start timetracking",
         "description": "starts the timetracking by creating a new workinghour for a given user",
         "operationId": "startTimetracking",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "contains the JWT in format 'Bearer token",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/JWTHeader"
-            }
-          },
           {
             "name": "userId",
             "in": "path",
@@ -253,20 +248,16 @@
     },
     "/workinghour_logs/users/{userId}/workinghours/{workinghourId}": {
       "put": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["workinghour log"],
         "summary": "stop timetracking",
         "description": "stop the timetracking by updating the related workinghour (created by [POST])",
         "operationId": "stopTimetracking",
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "contains the JWT in format 'Bearer token",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/JWTHeader"
-            }
-          },
           {
             "name": "userId",
             "in": "path",
@@ -314,6 +305,13 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "WorkinghourLogStart": {
         "required": ["log_type", "start_date", "user_id", "workinghour_period"],

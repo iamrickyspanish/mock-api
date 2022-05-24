@@ -151,6 +151,20 @@ class Service {
       return reply.send(err);
     }
   }
+
+  async login(req, reply) {
+    try {
+      const { email, password } = req.body.user;
+      if (email !== "user@mail.com" || password !== "Password12345")
+        return reply
+          .code(404)
+          .send({ message: "The login data are not valid!" });
+      const token = await reply.jwtSign({ payload: email });
+      reply.code(302).header("Authorization", `Bearer ${token}`).send(null);
+    } catch (err) {
+      return reply.send(err);
+    }
+  }
 }
 
 module.exports = (opts) => new Service(opts);
