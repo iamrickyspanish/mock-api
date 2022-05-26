@@ -3,12 +3,12 @@ const {
   formatWorkinghourForResponse,
   createWorkinghour
 } = require("./helpers");
+const jwtBlacklist = require("./jwtBlacklist");
 
 const DB_NAME = "hrlab-timetracking";
 const PROJECTS_COLLECTION = "projects";
 const WORKINGHOURS_COLLECTION = "workinghours";
 const USERS_COLLECTION = "users";
-// const jwtBlacklist = require("./jwtBlacklist");
 
 class Service {
   constructor() {
@@ -170,8 +170,10 @@ class Service {
 
   async logout(req, reply) {
     try {
-      // const [_, token] = req.headers.authorization?.split(" ");
-      // token && jwtBlacklist.push(token);
+      if (req.headers.authorization) {
+        const [_, token] = req.headers.authorization.split(" ");
+        token && jwtBlacklist.push(token);
+      }
       reply.code(200).send({ message: "Successfully logged out!" });
     } catch (err) {
       return reply.send(err);

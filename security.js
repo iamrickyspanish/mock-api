@@ -1,4 +1,5 @@
 // const jwt = require("@fastify/jwt");
+const jwtBlacklist = require("./jwtBlacklist");
 
 class Security {
   constructor() {}
@@ -9,7 +10,8 @@ class Security {
 
   async BearerAuth(req, reply) {
     try {
-      if (typeof req.headers.authorization === "string") {
+      const [_, token] = req.headers.authorization?.split(" ");
+      if (token && !jwtBlacklist.includes(token)) {
         req.jwtVerify();
       } else throw new Error();
     } catch (e) {

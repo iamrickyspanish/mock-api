@@ -79,6 +79,11 @@
     },
     "/api_auth/logout": {
       "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "tags": ["auth"],
         "summary": "logout",
         "description": "logout",
