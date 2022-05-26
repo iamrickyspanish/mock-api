@@ -7,6 +7,7 @@ const {
 const DB_NAME = "hrlab-timetracking";
 const PROJECTS_COLLECTION = "projects";
 const WORKINGHOURS_COLLECTION = "workinghours";
+const USERS_COLLECTION = "users";
 
 class Service {
   constructor() {
@@ -161,6 +162,99 @@ class Service {
           .send({ message: "The login data are not valid!" });
       const token = await reply.jwtSign({ payload: email });
       reply.code(302).header("Authorization", `Bearer ${token}`).send(null);
+    } catch (err) {
+      return reply.send(err);
+    }
+  }
+
+  async initialize(req, reply) {
+    try {
+      const users = this.db.collection(USERS_COLLECTION);
+      const user = await users.findOne({
+        _id: 1
+      });
+
+      const system_role_permissions = [
+        {
+          section_name: "projects",
+          read_access: true,
+          create_access: true,
+          update_access: true,
+          delete_access: true,
+          accesses: ["own_access", "managed_user_access", "all_access"],
+          own_permission: {
+            read_access: true,
+            create_access: true,
+            update_access: true,
+            delete_access: true
+          },
+          own_access: "all_permission",
+          special_access_permissions: {
+            read_access: false,
+            create_access: false,
+            update_access: false,
+            delete_access: false
+          },
+          user_permissions: [
+            {
+              read_access: false,
+              create_access: false,
+              update_access: false,
+              delete_access: false,
+              user_id: 1
+            }
+          ]
+        },
+        {
+          section_name: "time_tracking",
+          read_access: true,
+          create_access: true,
+          update_access: true,
+          delete_access: true,
+          accesses: ["managed_user_access", "all_access", "own_access"],
+          own_permission: {
+            read_access: true,
+            create_access: true,
+            update_access: true,
+            delete_access: true
+          },
+          own_access: "all_permission",
+          special_access_permissions: {
+            read_access: false,
+            create_access: false,
+            update_access: false,
+            delete_access: false
+          },
+          user_permissions: [
+            {
+              read_access: true,
+              create_access: true,
+              update_access: true,
+              delete_access: true,
+              user_id: 1
+            }
+          ]
+        }
+      ];
+
+      const userData = {
+        id: 1,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        locale: "en",
+        system_role_permissions
+      };
+
+      const subscriptionData = {
+        subscription_id: 1,
+        is_subscription_valid: true,
+        is_licence_valid: true
+      };
+
+      reply.code(200).send({
+        userData,
+        subscriptionData
+      });
     } catch (err) {
       return reply.send(err);
     }

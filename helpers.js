@@ -21,7 +21,6 @@ const formatWorkinghourForResponse = (workinghour, short = false) => {
     ? (() => {
         const { start_date, end_date, id, project_name, action, log_type } =
           preparedWorkinghour;
-        console.log("???????", id);
         return { start_date, end_date, id, project_name, action, log_type };
       })()
     : preparedWorkinghour;

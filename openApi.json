@@ -77,6 +77,102 @@
         }
       }
     },
+    "/initialize_application": {
+      "get": {
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": ["initialize"],
+        "summary": "deliver all imoortant data to initialize the app",
+        "description": "returns all relevant information about the user permissions",
+        "operationId": "initialize",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "user and permission information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "example": "John"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "example": "Doe"
+                        },
+                        "locale": {
+                          "type": "string",
+                          "example": "en",
+                          "enum": ["de", "en"]
+                        },
+                        "system_role_permissions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SystemRolePermission"
+                          }
+                        }
+                      }
+                    },
+                    "subscriptionData": {
+                      "type": "object",
+                      "description": "information about the user's subscription",
+                      "properties": {
+                        "subscription_id": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "is_subscription_valid": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "is_licence_valid": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "response if not authorized: redirect to login page",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string",
+                  "description": "contains the login url",
+                  "example": "http://app.hrlab.de/de/auth/login/"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/projects/time_tracking": {
       "get": {
         "security": [
@@ -147,6 +243,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Not Authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -196,6 +312,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Not Authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -238,6 +374,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ResponseWorkinghour"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not Authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -295,6 +451,36 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ResponseWorkinghour"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not Authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workinghour not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
                 }
               }
             }
@@ -522,6 +708,136 @@
         "type": "string",
         "description": "contains the JWT in format 'Bearer token'",
         "example": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwic2NwIjoidXNlciIsImF1ZCI6bnVsbCwiaWF0IjoxNjQyMTY4NTA0LCJleHAiOjE2NDM0NjQ1MDQsImp0aSI6ImM0ODVkNjc1LWI2YWUtNDVjYy1iNjE1LTAwNTllNTQ0YzI5ZSJ9.jNXuQ7qSNgZA8cTrLahc73JdP9uA_fbJO15xh6ZqOVk"
+      },
+      "NotAuthorized": {
+        "type": "object",
+        "description": "Error response: user not authorized",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "error message",
+            "example": "attribute xyz is not valid"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Generic error response",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "a list of attributes that the error message relates to, can be empty",
+            "example": ["start_date", "log_type"]
+          },
+          "message": {
+            "type": "string",
+            "description": "actual error message",
+            "example": "Please fill out the missing fields"
+          },
+          "status": {
+            "type": "number",
+            "description": "http status code",
+            "example": 400
+          }
+        }
+      },
+      "NotFound": {
+        "type": "object",
+        "description": "not found error response",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "a list of attributes that the error message relates to, will always be empty",
+            "example": []
+          },
+          "message": {
+            "type": "string",
+            "description": "actual error message",
+            "example": "Record not found!"
+          },
+          "status": {
+            "type": "number",
+            "description": "http status code",
+            "example": 404
+          }
+        }
+      },
+      "SystemRolePermission": {
+        "type": "object",
+        "description": "describes the permissions for a section",
+        "properties": {
+          "section_name": {
+            "type": "string",
+            "example": "time_tracking",
+            "enum": ["time_tracking", "projects"]
+          },
+          "read_access": {
+            "type": "boolean",
+            "example": true
+          },
+          "create_access": {
+            "type": "boolean",
+            "example": true
+          },
+          "update_access": {
+            "type": "boolean",
+            "example": true
+          },
+          "delete_access": {
+            "type": "boolean",
+            "example": true
+          },
+          "accesses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "own_permission": {
+            "type": "object",
+            "properties": {
+              "read_access": {
+                "type": "boolean",
+                "example": true
+              },
+              "create_access": {
+                "type": "boolean",
+                "example": true
+              },
+              "update_access": {
+                "type": "boolean",
+                "example": true
+              },
+              "delete_access": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "special_access_permission": {
+            "type": "object",
+            "properties": {
+              "read_access": {
+                "type": "boolean",
+                "example": true
+              },
+              "create_access": {
+                "type": "boolean",
+                "example": true
+              },
+              "update_access": {
+                "type": "boolean",
+                "example": true
+              },
+              "delete_access": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
       }
     }
   }
