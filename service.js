@@ -51,6 +51,14 @@ class Service {
       const workinghours = this.db.collection(WORKINGHOURS_COLLECTION);
       const projects = this.db.collection(PROJECTS_COLLECTION);
       const projectArray = await projects.find().toArray();
+
+      const users = this.db.collection(USERS_COLLECTION);
+      const user = await users.findOne({
+        _id: Number(req.params.userId)
+      });
+
+      if (!user) throw "Record not Found!";
+
       const results = await workinghours
         .find(
           {
@@ -73,7 +81,7 @@ class Service {
         )
       };
     } catch (err) {
-      reply.send(err);
+      return reply.code(404).send({ errors: [], message: err, status: 404 });
     }
   }
 
