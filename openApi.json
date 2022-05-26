@@ -13,12 +13,12 @@
   "paths": {
     "/api_auth/login": {
       "post": {
-        "tags": ["login"],
+        "tags": ["auth"],
         "summary": "authenticate using email and password",
         "description": "for this demo case, the following credentials will always be valid:  email: 'user@mail.com', password: 'Password12345'",
         "operationId": "login",
         "requestBody": {
-          "description": "workinghour to be created",
+          "description": "credentials",
           "content": {
             "application/json": {
               "schema": {
@@ -77,6 +77,33 @@
         }
       }
     },
+    "/api_auth/logout": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "logout",
+        "description": "logout",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "logout success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "success message",
+                      "example": "Successfully logged out!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/initialize_application": {
       "get": {
         "security": [
@@ -86,7 +113,7 @@
         ],
         "tags": ["initialize"],
         "summary": "deliver all imoortant data to initialize the app",
-        "description": "returns all relevant information about the user permissions",
+        "description": "returns initial data: session data and user data, including permissions for the projects and timetracking endpoints",
         "operationId": "initialize",
         "parameters": [],
         "responses": {
@@ -153,9 +180,7 @@
             "headers": {
               "Location": {
                 "schema": {
-                  "type": "string",
-                  "description": "contains the login url",
-                  "example": "http://app.hrlab.de/de/auth/login/"
+                  "$ref": "#/components/schemas/RedirectToLogin"
                 }
               }
             }
@@ -741,6 +766,11 @@
             "example": 400
           }
         }
+      },
+      "RedirectToLogin": {
+        "type": "string",
+        "description": "redirect to web login page",
+        "example": "http://app.hrlab.de/de/auth/login/"
       },
       "NotFound": {
         "type": "object",

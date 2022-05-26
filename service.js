@@ -8,6 +8,7 @@ const DB_NAME = "hrlab-timetracking";
 const PROJECTS_COLLECTION = "projects";
 const WORKINGHOURS_COLLECTION = "workinghours";
 const USERS_COLLECTION = "users";
+// const jwtBlacklist = require("./jwtBlacklist");
 
 class Service {
   constructor() {
@@ -162,6 +163,16 @@ class Service {
           .send({ message: "The login data are not valid!" });
       const token = await reply.jwtSign({ payload: email });
       reply.code(302).header("Authorization", `Bearer ${token}`).send(null);
+    } catch (err) {
+      return reply.send(err);
+    }
+  }
+
+  async logout(req, reply) {
+    try {
+      // const [_, token] = req.headers.authorization?.split(" ");
+      // token && jwtBlacklist.push(token);
+      reply.code(200).send({ message: "Successfully logged out!" });
     } catch (err) {
       return reply.send(err);
     }
