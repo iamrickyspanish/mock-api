@@ -14,4 +14,16 @@ const jwtOptions = {
 module.exports = async function (fastify, opts) {
   fastify.register(openapiGlue, openApiOptions);
   fastify.register(jwt, jwtOptions);
+  fastify.setErrorHandler((err, req, reply) => {
+    const error =
+      err.statusCode == 401
+        ? { error: "" }
+        : {
+            status: err.statusCode,
+            message: err.message,
+            errors: []
+          };
+
+    reply.code(err.statusCode).send(error);
+  });
 };

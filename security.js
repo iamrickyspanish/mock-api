@@ -8,11 +8,13 @@ class Security {
   }
 
   async BearerAuth(req, reply) {
-    // if (typeof req.headers.Authorize === "string") {
-    //   // const [_, token] = req.headers.Authorize.split("");
-    //   request.jwtVerify();
-    // }
-    if (!req.jwtVerify()) throw new Error(401, "Unauthorized");
+    try {
+      if (typeof req.headers.authorization === "string") {
+        req.jwtVerify();
+      } else throw new Error();
+    } catch (e) {
+      throw new Error(401, "Unauthorized");
+    }
   }
 }
 

@@ -715,8 +715,8 @@
         "properties": {
           "error": {
             "type": "string",
-            "description": "error message",
-            "example": "attribute xyz is not valid"
+            "description": "always empty",
+            "example": ""
           }
         }
       },
