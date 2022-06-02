@@ -262,7 +262,7 @@ class Service {
         id: 1,
         first_name: user.first_name,
         last_name: user.last_name,
-        locale: "en",
+        locale: user.locale,
         system_role_permissions
       };
 
