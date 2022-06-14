@@ -324,7 +324,8 @@
             "description": "date range start",
             "required": true,
             "schema": {
-              "type": "date"
+              "type": "string",
+              "format": "date"
             }
           },
           {
@@ -333,13 +334,14 @@
             "description": "date range start",
             "required": true,
             "schema": {
-              "type": "date"
+              "type": "string",
+              "format": "date"
             }
           },
           {
             "name": "order_by",
             "in": "query",
-            "description": "date range start",
+            "description": "date range end",
             "required": true,
             "schema": {
               "type": "string",
