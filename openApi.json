@@ -8,6 +8,12 @@
   "servers": [
     {
       "url": "https://frag.world/api"
+    },
+    {
+      "url": "https://app.hrlab.de"
+    },
+    {
+      "url": "http://127.0.0.1:5000"
     }
   ],
   "paths": {
