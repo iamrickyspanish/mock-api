@@ -7,11 +7,11 @@
   },
   "servers": [
     {
-      "url": "https://frag.world/api/en"
+      "url": "https://frag.world/api"
     }
   ],
   "paths": {
-    "/api_auth/login": {
+    "/en/api_auth/login": {
       "post": {
         "tags": ["auth"],
         "summary": "authenticate using email and password",
@@ -77,7 +77,7 @@
         }
       }
     },
-    "/api_auth/logout": {
+    "/en/api_auth/logout": {
       "get": {
         "security": [
           {
@@ -109,7 +109,7 @@
         }
       }
     },
-    "/initialize_application": {
+    "/initialize_mobile_application": {
       "get": {
         "security": [
           {
@@ -148,12 +148,6 @@
                           "type": "string",
                           "example": "en",
                           "enum": ["de", "en"]
-                        },
-                        "system_role_permissions": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/SystemRolePermission"
-                          }
                         }
                       }
                     },
@@ -173,6 +167,12 @@
                           "type": "boolean",
                           "example": true
                         }
+                      }
+                    },
+                    "system_role_permissions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SystemRolePermission"
                       }
                     }
                   }
@@ -203,7 +203,7 @@
         }
       }
     },
-    "/projects/time_tracking": {
+    "/en/projects/time_tracking": {
       "get": {
         "security": [
           {
@@ -297,7 +297,7 @@
         }
       }
     },
-    "/workinghour_logs/users/{userId}/workinghours": {
+    "/en/workinghour_logs/users/{userId}/workinghours": {
       "get": {
         "security": [
           {
@@ -316,6 +316,34 @@
             "required": true,
             "schema": {
               "type": "integer"
+            }
+          },
+          {
+            "name": "date_range[start_date]",
+            "in": "query",
+            "description": "date range start",
+            "required": true,
+            "schema": {
+              "type": "date"
+            }
+          },
+          {
+            "name": "date_range[end_date]",
+            "in": "query",
+            "description": "date range start",
+            "required": true,
+            "schema": {
+              "type": "date"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "date range start",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "start_date ASC"
             }
           }
         ],
@@ -432,7 +460,7 @@
         "x-codegen-request-body-name": "workinghour"
       }
     },
-    "/workinghour_logs/users/{userId}/workinghours/{workinghourId}": {
+    "/en/workinghour_logs/users/{userId}/workinghours/{workinghourId}": {
       "put": {
         "security": [
           {

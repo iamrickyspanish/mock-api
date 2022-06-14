@@ -22,7 +22,8 @@ module.exports = async function (fastify, opts) {
   fastify.register(jwt, jwtOptions);
   fastify.setErrorHandler((err, req, reply) => {
     const isInitializationRejected =
-      req.url.includes("initialize_application") && err.statusCode === 401;
+      req.url.includes("initialize_mobile_application") &&
+      err.statusCode === 401;
 
     const error = isInitializationRejected
       ? null

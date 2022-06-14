@@ -262,8 +262,7 @@ class Service {
         id: 1,
         first_name: user.first_name,
         last_name: user.last_name,
-        locale: user.locale,
-        system_role_permissions
+        locale: user.locale
       };
 
       const subscriptionData = {
@@ -274,7 +273,8 @@ class Service {
 
       reply.code(200).send({
         userData,
-        subscriptionData
+        subscriptionData,
+        system_role_permissions
       });
     } catch (err) {
       return reply.send(err);
